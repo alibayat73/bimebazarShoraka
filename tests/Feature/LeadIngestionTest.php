@@ -30,14 +30,14 @@ class LeadIngestionTest extends TestCase
         $lead = Lead::first();
         $this->assertEquals('John Doe', $lead->name);
 
-        // Let's verify score:
-        // Budget >= 50k (30 pts)
-        // Source = partner_api (15 pts)
-        // Email Domain != generic (15 pts - example.com is not generic)
-        // Data Completeness (email & phone) (10 pts)
-        // Iran Phone matches (10 pts)
-        // Total = 30 + 15 + 15 + 10 + 10 = 80
-        $this->assertEquals(80, $lead->score);
+        // Let's verify score (with enhanced rules):
+        // Budget (30 base + 5 source alignment) = 35 pts
+        // Source (15 base + 5 contact bonus) = 20 pts
+        // Data Completeness (4+3+2+2+1+3) = 15 pts
+        // Email Domain (non-generic) = 15 pts
+        // Iran Phone (MCI + correct length) = 11 pts
+        // Total = 35 + 20 + 15 + 15 + 11 = 96
+        $this->assertEquals(96, $lead->score);
         $this->assertEquals('High', $lead->priority);
 
         Notification::assertSentTo(
