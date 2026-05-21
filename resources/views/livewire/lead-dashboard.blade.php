@@ -2,12 +2,49 @@
     <div class="flex items-center justify-between">
         <div>
             <flux:heading size="xl">Lead Management</flux:heading>
-            <flux:text>Manage and simulate leads in real-time.</flux:text>
+            <flux:text>Manage and generate leads in real-time.</flux:text>
         </div>
         <div class="flex gap-4">
-            <flux:button wire:click="simulateLead" icon="sparkles" variant="primary">Simulate Lead</flux:button>
+            <flux:button wire:click="$toggle('showForm')" icon="plus" variant="primary">Generate Lead</flux:button>
         </div>
     </div>
+
+    <flux:modal wire:model="showForm" title="Generate Lead">
+        <div class="space-y-4">
+            <flux:field>
+                <flux:label>Name <span class="text-red-500">*</span></flux:label>
+                <flux:input wire:model="name" placeholder="John Doe" />
+                <flux:error name="name" />
+            </flux:field>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <flux:field>
+                    <flux:label>Email</flux:label>
+                    <flux:input wire:model="email" type="email" placeholder="john@example.com" />
+                    <flux:error name="email" />
+                </flux:field>
+
+                <flux:field>
+                    <flux:label>Phone</flux:label>
+                    <flux:input wire:model="phone" placeholder="09121234567" />
+                    <flux:error name="phone" />
+                </flux:field>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <flux:field>
+                    <flux:label>Budget</flux:label>
+                    <flux:input wire:model="budget" type="number" step="0.01" placeholder="50000" />
+                    <flux:error name="budget" />
+                </flux:field>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2">
+                <flux:button wire:click="$toggle('showForm')" variant="ghost">Cancel</flux:button>
+                <flux:button wire:click="generateLead" variant="primary">Create Lead</flux:button>
+            </div>
+        </div>
+    </flux:modal>
 
     <!-- KPIs -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">

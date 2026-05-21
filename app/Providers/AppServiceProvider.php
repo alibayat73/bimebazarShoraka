@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Setting;
+use App\Services\Rag\RagRetriever;
 use App\Services\Scoring\LeadScorer;
 use App\Services\Scoring\Rules\AdditionalDataCompletenessRule;
+use App\Services\Scoring\Rules\AiScoringRule;
 use App\Services\Scoring\Rules\BudgetRule;
 use App\Services\Scoring\Rules\DataCompletenessRule;
 use App\Services\Scoring\Rules\EmailDomainRule;
@@ -31,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
             $scorer->addRule(new EmailDomainRule);
             $scorer->addRule(new AdditionalDataCompletenessRule);
             $scorer->addRule(new IranPhoneRule);
+            $scorer->addRule(new AiScoringRule(new RagRetriever));
 
             return $scorer;
         });
@@ -41,7 +45,31 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->mergeAiSettings();
+
         $this->configureDefaults();
+    }
+
+    /**
+     * Merge AI settings from the database into config.
+     */
+    protected function mergeAiSettings(): void
+    {
+        try {
+            $key = Setting::getValue('ai_api_key');
+            $provider = Setting::getValue('ai_provider', 'openai');
+            $model = Setting::getValue('ai_model');
+
+            if ($key) {
+                config(["ai.providers.{$provider}.key" => $key]);
+            }
+
+            if ($model) {
+                config(["ai.providers.{$provider}.model" => $model]);
+            }
+        } catch (\Exception $e) {
+            // Settings table may not exist yet (e.g., fresh install)
+        }
     }
 
     /**

@@ -1,11 +1,11 @@
 {
     "agents": [
-        "opencode",
-        "copilot"
+        "opencode"
     ],
     "cloud": false,
     "guidelines": true,
     "skills": [
+        "ai-sdk-development",
         "fortify-development",
         "laravel-best-practices",
         "fluxui-development",

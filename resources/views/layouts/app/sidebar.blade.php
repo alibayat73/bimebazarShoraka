@@ -18,6 +18,9 @@
                     <flux:sidebar.item icon="bell" :badge="auth()->user()->unreadNotifications->count() ?: null" badge-color="orange" :href="route('notifications')" :current="request()->routeIs('notifications')" wire:navigate>
                         {{ __('Notifications') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item icon="document-text" :href="route('criteria-documents')" :current="request()->routeIs('criteria-documents')" wire:navigate>
+                        {{ __('Criteria Documents') }}
+                    </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 

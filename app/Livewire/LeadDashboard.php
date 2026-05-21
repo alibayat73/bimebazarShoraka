@@ -5,7 +5,6 @@ namespace App\Livewire;
 use App\Http\Controllers\Api\LeadController;
 use App\Http\Requests\StoreLeadRequest;
 use App\Models\Lead;
-use Faker\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -20,29 +19,38 @@ class LeadDashboard extends Component
 
     public string $priorityFilter = '';
 
-    public string $newLeadName = '';
+    public bool $showForm = false;
 
-    public string $newLeadEmail = '';
+    public string $name = '';
 
-    public string $newLeadPhone = '';
+    public string $email = '';
 
-    public string $newLeadBudget = '';
+    public string $phone = '';
+
+    public string $budget = '';
 
     protected $queryString = ['search', 'priorityFilter'];
 
-    /**
-     * Simulate a new lead via the API logic directly here for demo purposes
-     */
-    public function simulateLead(): void
+    protected function rules(): array
     {
-        $faker = Factory::create();
+        return [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['nullable', 'required_without:phone', 'email', 'max:255'],
+            'phone' => ['nullable', 'required_without:email', 'string', 'max:255'],
+            'budget' => ['nullable', 'numeric', 'min:0'],
+        ];
+    }
+
+    public function generateLead(): void
+    {
+        $this->validate();
 
         $request = new Request([
-            'name' => $faker->name,
-            'email' => $faker->unique()->safeEmail,
-            'phone' => '0912'.$faker->randomNumber(7, true), // Iran phone rule
-            'budget' => $faker->randomElement([5000, 15000, 60000]),
-            'source' => $faker->randomElement(['web', 'partner_api']),
+            'name' => $this->name,
+            'email' => $this->email ?: null,
+            'phone' => $this->phone ?: null,
+            'budget' => $this->budget ? (float) $this->budget : null,
+            'source' => 'manual',
         ]);
 
         $controller = app(LeadController::class);
@@ -52,17 +60,18 @@ class LeadDashboard extends Component
         );
         $controller->store($storeRequest);
 
+        $this->reset(['name', 'email', 'phone', 'budget', 'showForm']);
         $this->resetPage();
     }
 
-    public function render(): \Illuminate\Contracts\View\Factory|View|\Illuminate\View\View
+    public function render(): View
     {
         $query = Lead::query()->latest();
 
         if ($this->search) {
             $query->where(function ($q) {
-                $q->where('name', 'like', "%{$this->search}%")
-                    ->orWhere('email', 'like', "%{$this->search}%");
+                $q->where('name', 'like', "%$this->search%")
+                    ->orWhere('email', 'like', "%$this->search%");
             });
         }
 
