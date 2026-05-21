@@ -16,7 +16,6 @@
   <a href="#-architecture">Architecture</a> •
   <a href="#-quick-start">Quick Start</a> •
   <a href="#-scoring-system">Scoring System</a> •
-  <a href="#-development">Development</a> •
   <a href="#-testing">Testing</a>
 </p>
 
@@ -76,8 +75,8 @@ graph TD
 
 ```bash
 # 1. Clone the repository
-git clone <repository-url>
-cd bimebazar
+git clone git@github.com:alibayat73/bimebazarShoraka.git
+cd bimebazarShoraka
 
 # 2. Install PHP dependencies
 composer install
@@ -95,24 +94,11 @@ touch database/database.sqlite
 # 6. Run migrations and seeders
 php artisan migrate --seed
 
-# 7. Build frontend assets
-npm run build
-
-# 8. Start the development server
-php artisan serve
-```
-
-The application will be available at **http://localhost:8000**.
-
-### Running All Services (Recommended)
-
-Use the `dev` Composer script to start the dev server, queue worker, log watcher, and Vite hot-reload concurrently:
-
-```bash
+# 7. Start the dev server, queue worker, log watcher, and Vite hot-reload concurrently
 composer run dev
 ```
 
-> **Note:** The queue worker is required for processing notification jobs (mail, webhook).
+The application will be available at **http://localhost:8000**.
 
 ### Default Credentials
 
@@ -124,21 +110,6 @@ Password: password
 ```
 
 ---
-
-## ⚙️ Environment Variables
-
-Key configuration options in your `.env`:
-
-| Variable           | Default    | Description                                  |
-|--------------------|------------|----------------------------------------------|
-| `DB_CONNECTION`    | `sqlite`   | Database driver (sqlite, mysql, pgsql)       |
-| `QUEUE_CONNECTION` | `database` | Queue driver (sync, database, redis)         |
-| `CACHE_STORE`      | `database` | Cache backend                                |
-| `SESSION_DRIVER`   | `database` | Session driver                               |
-| `MAIL_MAILER`      | `log`      | Mail driver (log, smtp, mailgun, etc.)       |
-| `LEAD_WEBHOOK_URL` | *(empty)*  | Webhook URL for hot lead notifications       |
-| `OPENAI_API_KEY`   | *(empty)*  | OpenAI API key (for AI scoring + embeddings) |
-
 ### AI Providers
 
 The system supports 14+ AI providers via `laravel/ai`. Set the corresponding `*_API_KEY` in your `.env`:
