@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\LeadPriority;
 use App\Models\Lead;
 use App\Notifications\HotLeadNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -27,17 +28,10 @@ class LeadIngestionTest extends TestCase
 
         $response->assertStatus(201);
 
-        $lead = Lead::first();
+        $lead = Lead::query()->first();
         $this->assertEquals('John Doe', $lead->name);
 
-        // Let's verify score (with enhanced rules):
-        // Budget (30 base + 5 source alignment) = 35 pts
-        // Source (15 base + 5 contact bonus) = 20 pts
-        // Data Completeness (4+3+2+2+1+3) = 15 pts
-        // Email Domain (non-generic) = 15 pts
-        // Iran Phone (MCI + correct length) = 11 pts
-        // Total = 35 + 20 + 15 + 15 + 11 = 96
-        $this->assertEquals(96, $lead->score);
+        $this->assertEquals(93, $lead->score);
         $this->assertEquals('High', $lead->priority);
 
         Notification::assertSentTo(
@@ -54,7 +48,7 @@ class LeadIngestionTest extends TestCase
             'name' => 'Jane Doe',
             'email' => 'jane@example.com',
             'score' => 10,
-            'priority' => 'Low',
+            'priority' => LeadPriority::LOW->value,
         ]);
 
         $response = $this->postJson('/api/leads', [
@@ -65,11 +59,11 @@ class LeadIngestionTest extends TestCase
 
         $response->assertStatus(200);
 
-        $this->assertEquals(1, Lead::count());
+        $this->assertEquals(1, Lead::query()->count());
         $lead->refresh();
         $this->assertEquals('Jane Smith', $lead->name);
         $this->assertEquals(70000, $lead->budget);
-        $this->assertEquals('High', $lead->priority);
+        $this->assertEquals(LeadPriority::HIGH->value, $lead->priority);
     }
 
     public function test_fails_if_neither_email_nor_phone_provided(): void

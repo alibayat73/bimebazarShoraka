@@ -33,11 +33,6 @@ class DataCompletenessRule implements ScoringRuleInterface
             $score += 1;
         }
 
-        // Consistency bonus: all core fields filled
-        if ($lead->email && $lead->phone && $lead->budget) {
-            $score += 3;
-        }
-
         // Contradiction penalty: source is partner_api but no contact info
         if ($lead->source === 'partner_api' && ! $lead->email && ! $lead->phone) {
             $score -= 5;

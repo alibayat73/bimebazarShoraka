@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\LeadPriority;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,7 +20,7 @@ return new class extends Migration
             $table->decimal('budget', 12, 2)->nullable();
             $table->string('source')->nullable();
             $table->integer('score')->default(0);
-            $table->string('priority')->default('Low');
+            $table->string('priority')->default(LeadPriority::LOW->value);
             $table->json('additional_data')->nullable();
             $table->timestamps();
         });

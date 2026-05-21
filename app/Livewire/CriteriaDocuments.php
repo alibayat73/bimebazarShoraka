@@ -3,6 +3,8 @@
 namespace App\Livewire;
 
 use App\Models\RagDocument;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Laravel\Ai\Embeddings;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -29,7 +31,7 @@ class CriteriaDocuments extends Component
     {
         $this->validate();
 
-        $doc = RagDocument::create([
+        $doc = RagDocument::query()->create([
             'title' => $this->title,
             'content' => $this->content,
         ]);
@@ -51,13 +53,13 @@ class CriteriaDocuments extends Component
 
     public function deleteDocument(int $id): void
     {
-        RagDocument::findOrFail($id)->delete();
+        RagDocument::query()->findOrFail($id)->delete();
     }
 
-    public function render()
+    public function render(): Factory|View|\Illuminate\View\View
     {
         return view('livewire.criteria-documents', [
-            'documents' => RagDocument::latest()->paginate(10),
+            'documents' => RagDocument::query()->latest()->paginate(10),
         ]);
     }
 }

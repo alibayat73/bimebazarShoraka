@@ -31,12 +31,12 @@ class AiScoringRuleTest extends TestCase
 
     public function test_keyword_fallback_retrieval_works(): void
     {
-        RagDocument::create([
+        RagDocument::query()->create([
             'title' => 'High Budget Criteria',
             'content' => 'Leads with budgets over $50,000 are high value.',
         ]);
 
-        RagDocument::create([
+        RagDocument::query()->create([
             'title' => 'Low Budget Criteria',
             'content' => 'Leads under $5,000 are low value.',
         ]);

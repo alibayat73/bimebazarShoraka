@@ -12,7 +12,7 @@ class StoreLeadRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true; // Open for this task, would normally be auth'd
+        return true;
     }
 
     /**

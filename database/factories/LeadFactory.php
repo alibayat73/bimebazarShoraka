@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\LeadPriority;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class LeadFactory extends Factory
@@ -18,7 +19,7 @@ class LeadFactory extends Factory
             'source' => fake()->randomElement(['web', 'partner_api', 'manual', 'csv']),
             // Score and priority will be calculated by the seeder using the real engine
             'score' => 0,
-            'priority' => 'Low',
+            'priority' => LeadPriority::LOW->value,
             'additional_data' => fake()->boolean(30) ? ['company_size' => fake()->numberBetween(1, 500)] : null,
         ];
     }

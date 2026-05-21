@@ -15,9 +15,6 @@ class LeadController extends Controller
 {
     public function __construct(private readonly LeadScorer $scorer) {}
 
-    /**
-     * Store or Update a lead based on email or phone.
-     */
     public function store(StoreLeadRequest $request): JsonResponse
     {
         $data = $request->validated();
